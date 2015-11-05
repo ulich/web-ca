@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>{{ cn }}</h1>
+
+<p class="text-right">
+    Password: 
+    <input type="password" value="{{ password }}" id="password" readonly>
+    <label><input type="checkbox" onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'"> Show password</label>
+
+    <a class="btn btn-primary" style="margin-left: 50px" href="{{ url_for('download_certificate', cn=cn) }}">Download</a>
+</p>
+
+Certificate information:
+<pre>{{ certificate }}</pre>
+
+{% endblock %}

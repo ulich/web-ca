@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<form class="form-horizontal" action="{{ url_for('create_certificate') }}" method="POST">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Common Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="CN" value="Max_Mustermann_2015">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="email" value="max@mustermann.de">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Organizational Unit</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="OU" value="R&amp;D">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Organization</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="O" value="Nonesense GmbH">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Locality</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="L" value="Buxtehude">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">State</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="ST" value="Niedersachsen">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Country</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="C" value="DE">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Valid for x days</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="days_valid" value="365">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="password" value="secret123">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
