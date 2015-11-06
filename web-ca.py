@@ -4,8 +4,7 @@ from flask_bootstrap import Bootstrap
 import ca
 
 app = Flask(__name__)
-app.config['BOOTSTRAP_SERVE_LOCAL'] = True
-app.secret_key = "\xd0\x03A\xea\x94\xd4\x17_`\x1b\x14+|\xe6\xb1bB$\x88\xb3\x06\xc6b\x11"  # TODO: keep this secret
+app.config.from_object('settings')
 Bootstrap(app)
 
 
@@ -37,4 +36,4 @@ def download_certificate(cn):
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run()
