@@ -59,7 +59,7 @@ def create(form):
         'openssl', 'ca',
         '-config', 'openssl.cnf',
         '-batch',
-        '-days', form.days_valid.data,
+        '-days', str(form.days_valid.data),
         '-out', crt_filepath,
         '-infiles', csr_filepath,
     ], cwd=ca_dir, stderr=STDOUT)
