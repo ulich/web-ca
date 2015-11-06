@@ -1,39 +1,52 @@
 from flask import Flask, render_template, send_file, request, redirect, url_for
+from flask_bootstrap import Bootstrap
+from flask_wtf import Form
+from wtforms import StringField, SubmitField, validators, ValidationError
 from subprocess import check_output, STDOUT
 import os, zipfile, io
 
 app = Flask(__name__)
+app.config['BOOTSTRAP_SERVE_LOCAL'] = True
+app.secret_key = "\xd0\x03A\xea\x94\xd4\x17_`\x1b\x14+|\xe6\xb1bB$\x88\xb3\x06\xc6b\x11"  # TODO: keep this secret
+Bootstrap(app)
+
+
+class CertificateCreationForm(Form):
+    common_name = StringField('Common Name', validators=[validators.InputRequired(), validators.Regexp('^[A-Za-z0-9_-]+$', message='Only letters, numbers, - or _')], default='Max_Mustermann_2015')
+    email = StringField('Email', validators=[validators.Email()], default='max@mustermann.de')
+    organization = StringField('Organization', validators=[validators.InputRequired()], default='Nonesense GmbH')
+    organizational_unit = StringField('Organizational Unit', validators=[validators.Optional()], default='R&D')
+    locality = StringField('Locality', validators=[validators.InputRequired()], default='Buxtehude')
+    state = StringField('State', validators=[validators.InputRequired()], default='Niedersachsen')
+    country = StringField('Country', validators=[validators.InputRequired()], default='DE')
+    days_valid = StringField('Valid for x days', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
+    password = StringField('Password', validators=[validators.InputRequired()], default='secret123')
+    create_certificate = SubmitField('Create certificate')
+
+    def validate_common_name(form, field):
+        if certificate_exists(field.data):
+            raise ValidationError('A certificate with this CN already exists. Please choose a different one')
 
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    return redirect(url_for('create_certificate'))
 
 
-@app.route("/certificate", methods=['POST'])
+@app.route("/certificate", methods=['GET', 'POST'])
 def create_certificate():
-    form = request.form
+    form = CertificateCreationForm()
+    if form.validate_on_submit():
+        cn = form.common_name.data
+        ou = '/OU=' + form.organizational_unit.data if form.organizational_unit.data != '' else ''
 
-    # TODO: validate input:
-    # - only [A-Za-z0-9_-]
+        subject = '/C={}/ST={}/L={}/O={}{}/CN={}/emailAddress={}'.format(form.country.data, form.state.data, form.locality.data, form.organization.data, ou, cn, form.email.data)
 
-    cn = form['CN']
-    ou = '/OU=' + form['OU'] if form['OU'] != '' else ''
+        generate_certificate_files(subject, cn, form.days_valid.data, form.password.data)
 
-    subject = '/C={}/ST={}/L={}/O={}{}/CN={}/emailAddress={}'.format(form['C'], form['ST'], form['L'], form['O'], ou, cn, form['email'])
-
-    abort_if_certificate_already_exists(cn)
-    generate_certificate_files(subject, cn, form['days_valid'], form['password'])
-
-    return redirect(url_for('display_certificate', cn=cn))
-
-    
-def abort_if_certificate_already_exists(cn):
-    ca_dir = get_ca_dir()
-    for ext in ['pass', 'crt', 'csr', 'key']:
-        path = '{}/keys/{}.{}'.format(ca_dir, cn, ext)
-        if os.path.isfile(path):
-            raise Exception('Certificate already exists, please choose a different CN')
+        return redirect(url_for('display_certificate', cn=cn))
+    else:
+        return render_template('index.html', form=form)
 
 
 def generate_certificate_files(subject, cn, days_valid, password):
@@ -118,6 +131,15 @@ def get_ca_dir():
     returns the absolute path to the ca dir, which is located next to this script
     """
     return os.path.dirname(os.path.abspath(__file__)) + '/ca'
+
+
+def certificate_exists(cn):
+    ca_dir = get_ca_dir()
+    for ext in ['pass', 'crt', 'csr', 'key']:
+        path = '{}/keys/{}.{}'.format(ca_dir, cn, ext)
+        if os.path.isfile(path):
+            return True
+    return False
 
 
 if __name__ == '__main__':

@@ -1,5 +1,10 @@
+dominate==2.1.16
 Flask==0.10.1
+Flask-Bootstrap==3.3.5.7
+Flask-WTF==0.12
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
+visitor==0.1.2
 Werkzeug==0.10.4
+WTForms==2.0.2

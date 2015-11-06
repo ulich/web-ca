@@ -1,12 +1,8 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>web-ca</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-</head>
-<body>
+{% extends "bootstrap/base.html" %}
 
+{% block title %}web-ca{% endblock %}
+
+{% block navbar %}
 <nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
@@ -14,10 +10,10 @@
         </div>
     </div>
 </nav>
+{% endblock %}
 
+{% block content %}
 <div class="container">
-    {% block body %}{% endblock %}
+    {% block main %}{% endblock %}
 </div>
-
-</body>
-</html>
+{% endblock %}
