@@ -4,15 +4,17 @@ from wtforms import StringField, IntegerField, SubmitField, validators, Validati
 from subprocess import check_output, STDOUT
 import os, zipfile, io, random, string
 
+valid_chars_cn = validators.Regexp('^[A-Za-z0-9_\-\.]+$', message='Letters, numbers and one of the following characters are allowed: _-.')
+valid_chars = validators.Regexp('^[A-Za-z0-9_\-\.& ]+$', message='Letters, numbers, whitespaces and one of the following characters are allowed: _-.&')
 
 class CreationForm(Form):
-    common_name = StringField('Common Name', validators=[validators.InputRequired(), validators.Regexp('^[A-Za-z0-9_-]+$', message='Only letters, numbers, - or _')], default='Max_Mustermann_2015')
+    common_name = StringField('Common Name', validators=[validators.InputRequired(), valid_chars_cn], default='Max_Mustermann_2015')
     email = StringField('Email', validators=[validators.Email()], default='max@mustermann.de')
-    organization = StringField('Organization', validators=[validators.InputRequired()], default='Nonesense GmbH')
-    organizational_unit = StringField('Organizational Unit', validators=[validators.Optional()], default='R&D')
-    locality = StringField('Locality', validators=[validators.InputRequired()], default='Buxtehude')
-    state = StringField('State', validators=[validators.InputRequired()], default='Niedersachsen')
-    country = StringField('Country', validators=[validators.InputRequired()], default='DE')
+    organization = StringField('Organization', validators=[validators.InputRequired(), valid_chars], default='Nonesense GmbH')
+    organizational_unit = StringField('Organizational Unit', validators=[validators.Optional(), valid_chars], default='R&D')
+    locality = StringField('Locality', validators=[validators.InputRequired(), valid_chars], default='Buxtehude')
+    state = StringField('State', validators=[validators.InputRequired(), valid_chars], default='Niedersachsen')
+    country = StringField('Country', validators=[validators.InputRequired(), valid_chars], default='DE')
     days_valid = IntegerField('Valid for x days', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
     password = StringField('Password', validators=[validators.InputRequired()])
     create_certificate = SubmitField('Create certificate')
