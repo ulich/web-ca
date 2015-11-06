@@ -2,7 +2,7 @@ from flask_wtf import Form
 from wtforms import StringField, IntegerField, SubmitField, validators, ValidationError
 
 from subprocess import check_output, STDOUT
-import os, zipfile, io
+import os, zipfile, io, random, string
 
 
 class CreationForm(Form):
@@ -14,8 +14,12 @@ class CreationForm(Form):
     state = StringField('State', validators=[validators.InputRequired()], default='Niedersachsen')
     country = StringField('Country', validators=[validators.InputRequired()], default='DE')
     days_valid = IntegerField('Valid for x days', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
-    password = StringField('Password', validators=[validators.InputRequired()], default='secret123')
+    password = StringField('Password', validators=[validators.InputRequired()])
     create_certificate = SubmitField('Create certificate')
+
+    def __init__(self, **kwargs):
+        super(CreationForm, self).__init__(**kwargs)
+        self.password.data = random_password(8)
 
     def validate_common_name(form, field):
         if certificate_exists(field.data):
@@ -118,3 +122,7 @@ def certificate_exists(cn):
         if os.path.isfile(path):
             return True
     return False
+
+
+def random_password(length):
+    return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(length))
