@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, SubmitField, validators, ValidationError
+from wtforms import StringField, IntegerField, SubmitField, validators, ValidationError
 
 from subprocess import check_output, STDOUT
 import os, zipfile, io
@@ -13,7 +13,7 @@ class CreationForm(Form):
     locality = StringField('Locality', validators=[validators.InputRequired()], default='Buxtehude')
     state = StringField('State', validators=[validators.InputRequired()], default='Niedersachsen')
     country = StringField('Country', validators=[validators.InputRequired()], default='DE')
-    days_valid = StringField('Valid for x days', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
+    days_valid = IntegerField('Valid for x days', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
     password = StringField('Password', validators=[validators.InputRequired()], default='secret123')
     create_certificate = SubmitField('Create certificate')
 
