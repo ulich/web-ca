@@ -7,16 +7,17 @@ import os, zipfile, io, random, string
 valid_chars_cn = validators.Regexp('^[A-Za-z0-9_\-\.]+$', message='Letters, numbers and one of the following characters are allowed: _-.')
 valid_chars = validators.Regexp('^[A-Za-z0-9_\-\.& ]+$', message='Letters, numbers, whitespaces and one of the following characters are allowed: _-.&')
 
+
 class CreationForm(Form):
-    common_name = StringField('Common Name', validators=[validators.InputRequired(), valid_chars_cn], default='Max_Mustermann_2015')
-    email = StringField('Email', validators=[validators.Email()], default='max@mustermann.de')
-    organization = StringField('Organization', validators=[validators.InputRequired(), valid_chars], default='Nonesense GmbH')
+    common_name = StringField('Common Name*', validators=[validators.InputRequired(), valid_chars_cn], default='Max_Mustermann_2015')
+    email = StringField('Email', validators=[validators.Optional(), validators.Email()], default='max@mustermann.de')
+    organization = StringField('Organization', validators=[validators.Optional(), valid_chars], default='Nonesense GmbH')
     organizational_unit = StringField('Organizational Unit', validators=[validators.Optional(), valid_chars], default='R&D')
-    locality = StringField('Locality', validators=[validators.InputRequired(), valid_chars], default='Buxtehude')
-    state = StringField('State', validators=[validators.InputRequired(), valid_chars], default='Niedersachsen')
-    country = StringField('Country', validators=[validators.InputRequired(), valid_chars], default='DE')
-    days_valid = IntegerField('Valid for x days', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
-    password = StringField('Password', validators=[validators.InputRequired()])
+    locality = StringField('Locality', validators=[validators.Optional(), valid_chars], default='Buxtehude')
+    state = StringField('State', validators=[validators.Optional(), valid_chars], default='Niedersachsen')
+    country = StringField('Country', validators=[validators.Optional(), valid_chars], default='DE')
+    days_valid = IntegerField('Valid for x days*', validators=[validators.InputRequired(), validators.NumberRange(min=1)], default='365')
+    password = StringField('Password*', validators=[validators.InputRequired()])
     create_certificate = SubmitField('Create certificate')
 
     def __init__(self, **kwargs):
@@ -41,7 +42,7 @@ def create(form):
     crt_filepath = '{}/keys/{}.crt'.format(ca_dir, cn)
     p12_filepath = '{}/keys/{}.p12'.format(ca_dir, cn)
     pwd_filepath = '{}/keys/{}.pass'.format(ca_dir, cn)
-    ca_filepath = '{}/db/ca.crt'.format(ca_dir)
+    ca_filepath = '{}/ca.crt'.format(ca_dir)
 
     with open(pwd_filepath, 'w') as passfile:
         passfile.write(form.password.data)
