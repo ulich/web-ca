@@ -4,6 +4,7 @@ import unittest
 import tempfile
 import shutil
 import tempfile
+import setup
 
 class WebCATestCase(unittest.TestCase):
 
@@ -12,18 +13,11 @@ class WebCATestCase(unittest.TestCase):
         web_ca.app.config['WTF_CSRF_ENABLED'] = False
 
         self.workdir = tempfile.mkdtemp()
+        setup.setup(self.workdir)
         web_ca.app.config['WEB_CA_WORK_DIR'] = self.workdir
 
-        shutil.copy('ca/ca.crt', self.workdir)
-        shutil.copy('ca/ca.key', self.workdir)
-        shutil.copy('ca/openssl.cnf', self.workdir)
-        os.makedirs(self.workdir + '/db')
-        os.makedirs(self.workdir + '/keys')
-
-        with open(self.workdir + '/db/index.txt', 'wb') as index_file:
-            index_file.write("")
-        with open(self.workdir + '/db/serial', 'wb') as serial_file:
-            serial_file.write("01")
+        shutil.copy('test/ca.crt', self.workdir)
+        shutil.copy('test/ca.key', self.workdir)
 
         self.app = web_ca.app.test_client()
 

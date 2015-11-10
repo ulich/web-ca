@@ -1,3 +1,5 @@
 openssl.cnf
 ca.crt
 ca.key
+keys
+db
