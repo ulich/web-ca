@@ -1,6 +1,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% extends "layout.html" %}
+{% block page_id %}create-certificate{% endblock %}
 
 {% block main %}
     {{ wtf.quick_form(form, form_type='horizontal', horizontal_columns=('sm', 2, 10), button_map={'create_certificate': 'primary'}) }}

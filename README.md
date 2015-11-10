@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ## Running
 
 ```
-python web-ca.py
+python web_ca.py
 ```
 
 Tested with python 2.7
